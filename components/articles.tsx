@@ -9,9 +9,7 @@ import { ArticleProps } from '@/types';
 import getFormatDate from '@/lib/utils/formatDate';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';
-
-const PAGE_NUM = 1;
-const PAGE_SIZE = 10;
+import { constants, SEARCH_TIME } from '../lib/constants';
 
 interface Props {
   articlesServer: ArticleProps[];
@@ -21,12 +19,12 @@ export default function Articles({ articlesServer }: Props) {
   const [orderBy, setOrderby] = useState('recent');
   const [keyword, setKeyword] = useState('');
   const [articles, setArticles] = useState<ArticleProps[]>(articlesServer);
-  const debouncedValue = useDebounce(keyword, 300);
+  const debouncedValue = useDebounce(keyword, SEARCH_TIME);
 
   const handleOrderClick = async (sortType: string): Promise<void> => {
     setOrderby(sortType);
     try {
-      const sortData = await getArticles(PAGE_NUM, PAGE_SIZE, sortType, keyword);
+      const sortData = await getArticles(constants.PAGE_NUM, constants.PAGE_SIZE, sortType, keyword);
       setArticles(sortData);
     } catch (error) {
       console.error(error);
@@ -40,7 +38,7 @@ export default function Articles({ articlesServer }: Props) {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const sortData = await getArticles(PAGE_NUM, PAGE_SIZE, orderBy, debouncedValue);
+        const sortData = await getArticles(constants.PAGE_NUM, constants.PAGE_SIZE, orderBy, debouncedValue);
         setArticles(sortData);
       } catch (error) {
         console.error(error);

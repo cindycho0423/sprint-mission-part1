@@ -4,7 +4,7 @@ import icSort from '@/public/images/icons/ic_sort.svg';
 import icArrowDown from '@/public/images/icons/ic_arrow_down.svg';
 
 type Props = {
-  handleOrder: (sortType: string) => void;
+  handleOrder: (sortType: 'like' | 'recent') => void;
 };
 
 export default function SelectBox({ handleOrder }: Props) {

@@ -6,13 +6,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import imageBadge from '@/public/images/img_badge.svg';
 import icHeart from '@/public/images/icons/ic_heart.png';
-
-const PAGE_NUM = 1;
-const ORDERBY = 'like';
+import { constants, IS_SERVER } from '../lib/constants';
 
 function getPageSize() {
   const width = window.innerWidth;
-  if (typeof window === 'undefined') {
+  if (IS_SERVER) {
     return 3;
   }
   if (width < 768) return 1;
@@ -27,7 +25,7 @@ export default function BestArticles() {
   useEffect(() => {
     const fetchBestArticles = async () => {
       try {
-        const data = await getBestArticles(PAGE_NUM, pageSize, ORDERBY);
+        const data = await getBestArticles(constants.PAGE_NUM, pageSize, constants.ORDERBY);
         setBestArticles(data);
       } catch (error) {
         console.error('Failed to fetch items:', error);
