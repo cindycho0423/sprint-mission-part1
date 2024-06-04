@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { getBestArticles, ListProps } from '@/lib/getArticles';
 import Link from 'next/link';
 import Image from 'next/image';
-import image_badge from '@/public/images/img_badge.svg';
-import ic_heart from '@/public/images/ic_heart.png';
+import imageBadge from '@/public/images/img_badge.svg';
+import icHeart from '@/public/images/icons/ic_heart.png';
 
 const PAGE_NUM = 1;
 const ORDERBY = 'like';
@@ -63,7 +63,7 @@ function BestArticlePreview({ createdAt, likeCount, image, title, writer }: List
 
   return (
     <div className='h-[169px] px-6 pb-6 bg-cool-gray50 rounded-lg sm:min-w-[343px] md:min-w-[340px] lg:min-w-[384px]'>
-      <Image src={image_badge} alt='베스트 뱃지' />
+      <Image src={imageBadge} alt='베스트 뱃지' />
       <div className='flex gap-2 mt-4 mb-4 h-[72px]'>
         <div className=' text-cool-gray800 text-[18px] leading-5 sm:min-w[212px] w-[212px] lg:w-[256px] lg:text-xl'>
           {title}
@@ -78,7 +78,7 @@ function BestArticlePreview({ createdAt, likeCount, image, title, writer }: List
         <div className='flex items-center gap-2'>
           <span className='text-cool-gray600'>{writer.nickname}</span>
           <div className='flex items-center gap-1'>
-            <Image src={ic_heart} alt='좋아요 하트' width={16}></Image>
+            <Image src={icHeart} alt='좋아요 하트' width={16} height={16}></Image>
             <span className='text-cool-gray500'>{likeCount}</span>
           </div>
         </div>

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import img_logo from '@/public/images/img_logo.png';
-import text_logo from '@/public/images/text_logo.png';
-import ic_profile from '@/public/images/ic_profile.png';
+import imgLogo from '@/public/images/img_logo.png';
+import textLogo from '@/public/images/text_logo.png';
+import icProfile from '@/public/images/icons/ic_profile.png';
 import { useRouter } from 'next/router';
 
 export default function Navigation() {
@@ -14,12 +14,12 @@ export default function Navigation() {
         <div className='flex items-center'>
           <Link href='/'>
             <div className='pr-4'>
-              <Image className='md:hidden lg:hidden' src={text_logo} width={81} alt='판다마켓로고' />
-              <Image className='sm:hidden md:block' src={img_logo} width={153} alt='판다마켓로고' />
+              <Image className='md:hidden lg:hidden' src={textLogo} width={81} alt='판다마켓로고' />
+              <Image className='sm:hidden md:block' src={imgLogo} width={153} alt='판다마켓로고' />
             </div>
           </Link>
           <div className='flex justify-around font-bold sm:min-w-[135px] sm:gap-2 md:w-[218px]'>
-            <Link href='/boards' prefetch={false}>
+            <Link href='/boards' prefetch={true}>
               <button className='font-bold block h-[70px] sm:w-[73px] md:w-[109px] lg:w-[109px] text-[#4B5563]'>
                 <span className={router.pathname.startsWith('/boards') ? `${'text-brand-blue'}` : ''}>자유게시판</span>
               </button>
@@ -33,7 +33,7 @@ export default function Navigation() {
         </div>
         <div className='flex items-center'>
           <Link href='/'>
-            <Image src={ic_profile} width={40} alt='판다마켓로고' />
+            <Image src={icProfile} width={40} alt='판다마켓로고' />
           </Link>
         </div>
       </div>

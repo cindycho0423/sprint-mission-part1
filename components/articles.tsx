@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import ic_search from '../public/images/ic_search.png';
-import ic_heart from '@/public/images/ic_heart.png';
-import ic_profile from '@/public/images/ic_profile.png';
+import icSearch from '@/public/images/icons/ic_search.png';
+import icHeart from '@/public/images/icons/ic_heart.png';
+import icProfile from '@/public/images/icons/ic_profile.png';
 import SelectBox from './select-box';
 import { getArticles, ListProps } from '@/lib/getArticles';
 import { ChangeEvent, useState, useEffect } from 'react';
@@ -51,7 +51,7 @@ export default function Articles({ articlesServer }: Props) {
   return (
     <div>
       <div className='relative flex justify-between gap-2 mb-6'>
-        <Image src={ic_search} width={24} alt='돋보기' className='absolute z-10 top-2 left-3' />
+        <Image src={icSearch} width={24} alt='돋보기' className='absolute z-10 top-2 left-3' />
         <input
           value={keyword}
           onChange={handleChange}
@@ -90,12 +90,12 @@ function ArticlePreview({ createdAt, likeCount, image, title, writer }: ListProp
       </div>
       <div className='flex justify-between pb-6 border-b border-solid text-cool-gray400 border-cool-gray200'>
         <div className='flex items-center gap-2'>
-          <Image src={ic_profile} alt='프로필 이미지' width={24} />
+          <Image src={icProfile} alt='프로필 이미지' width={24} />
           <span className='text-cool-gray600'>{writer.nickname}</span>
           <div>{createdDate}</div>
         </div>
         <div className='flex items-center gap-1'>
-          <Image src={ic_heart} alt='좋아요 하트' width={16}></Image>
+          <Image src={icHeart} alt='좋아요 하트' width={16}></Image>
           <span>{likeCount}+</span>
         </div>
       </div>
