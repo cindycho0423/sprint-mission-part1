@@ -5,6 +5,7 @@ import icHeart from '@/public/images/icons/ic_heart.png';
 import icProfile from '@/public/images/icons/ic_profile.png';
 import SelectBox from './select-box';
 import { getArticles, ListProps } from '@/lib/getArticles';
+import getFormatDate from '@/lib/utils/formatDate';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';
 
@@ -73,11 +74,7 @@ export default function Articles({ articlesServer }: Props) {
 }
 
 function ArticlePreview({ createdAt, likeCount, image, title, writer }: ListProps) {
-  const date = new Date(createdAt).getDate();
-  const month = new Date(createdAt).getMonth() + 1;
-  const year = new Date(createdAt).getFullYear();
-  const createdDate = `${year}. ${month}. ${date}`;
-
+  const createdDate = getFormatDate(createdAt);
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex justify-between gap-2 font-semibold text-cool-gray800'>
@@ -92,7 +89,7 @@ function ArticlePreview({ createdAt, likeCount, image, title, writer }: ListProp
         <div className='flex items-center gap-2'>
           <Image src={icProfile} alt='프로필 이미지' width={24} />
           <span className='text-cool-gray600'>{writer.nickname}</span>
-          <div>{createdDate}</div>
+          <time>{createdDate}</time>
         </div>
         <div className='flex items-center gap-1'>
           <Image src={icHeart} alt='좋아요 하트' width={16}></Image>

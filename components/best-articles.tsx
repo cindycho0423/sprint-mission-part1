@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { getBestArticles, ListProps } from '@/lib/getArticles';
+import getFormatDate from '@/lib/utils/formatDate';
 import Link from 'next/link';
 import Image from 'next/image';
 import imageBadge from '@/public/images/img_badge.svg';
@@ -56,10 +57,7 @@ export default function BestArticles() {
 }
 
 function BestArticlePreview({ createdAt, likeCount, image, title, writer }: ListProps) {
-  const date = new Date(createdAt).getDate();
-  const month = new Date(createdAt).getMonth() + 1;
-  const year = new Date(createdAt).getFullYear();
-  const createdDate = `${year}. ${month}. ${date}`;
+  const createdDate = getFormatDate(createdAt);
 
   return (
     <div className='h-[169px] px-6 pb-6 bg-cool-gray50 rounded-lg sm:min-w-[343px] md:min-w-[340px] lg:min-w-[384px]'>
@@ -82,7 +80,7 @@ function BestArticlePreview({ createdAt, likeCount, image, title, writer }: List
             <span className='text-cool-gray500'>{likeCount}</span>
           </div>
         </div>
-        <div className='text-cool-gray400'>{createdDate}</div>
+        <time className='text-cool-gray400'>{createdDate}</time>
       </div>
     </div>
   );
