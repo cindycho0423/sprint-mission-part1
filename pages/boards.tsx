@@ -7,8 +7,7 @@ import { ArticleProps } from '@/types';
 interface Props {
   articlesServer: ArticleProps[];
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
+export async function getServerSideProps() {
   try {
     const res = await axiosInstance.get(`/articles`);
     const articlesServer: ArticleProps[] = res.data.list ?? [];
@@ -26,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
       },
     };
   }
-};
+}
 
 export default function Boards({ articlesServer }: Props) {
   return (
