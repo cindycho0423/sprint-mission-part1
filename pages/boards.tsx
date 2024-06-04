@@ -2,16 +2,16 @@ import Head from 'next/head';
 import BestArticles from '@/components/best-articles';
 import Articles from '@/components/articles';
 import { GetServerSideProps } from 'next';
-import instance from '@/lib/axios';
-import { ListProps } from '@/lib/getArticles';
+import axiosInstance from '@/lib/axios';
+import { ArticleProps } from '@/types';
 interface Props {
-  articlesServer: ListProps[];
+  articlesServer: ArticleProps[];
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
   try {
-    const res = await instance.get(`/articles`);
-    const articlesServer: ListProps[] = res.data.list ?? [];
+    const res = await axiosInstance.get(`/articles`);
+    const articlesServer: ArticleProps[] = res.data.list ?? [];
 
     return {
       props: {

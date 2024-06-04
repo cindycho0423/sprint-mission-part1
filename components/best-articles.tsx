@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getBestArticles, ListProps } from '@/lib/getArticles';
+import { getBestArticles } from '@/lib/getArticles';
+import { ArticleProps } from '@/types';
 import getFormatDate from '@/lib/utils/formatDate';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -20,7 +21,7 @@ function getPageSize() {
 }
 
 export default function BestArticles() {
-  const [bestArticles, setBestArticles] = useState<ListProps[]>([]);
+  const [bestArticles, setBestArticles] = useState<ArticleProps[]>([]);
   const [pageSize, setPageSize] = useState(3);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function BestArticles() {
   );
 }
 
-function BestArticlePreview({ createdAt, likeCount, image, title, writer }: ListProps) {
+function BestArticlePreview({ createdAt, likeCount, image, title, writer }: ArticleProps) {
   const createdDate = getFormatDate(createdAt);
 
   return (

@@ -1,30 +1,15 @@
-import instance from './axios';
-
-export interface ListProps {
-  updatedAt: string;
-  createdAt: string;
-  likeCount: number;
-  writer: Writer;
-  image: null | string;
-  content: string;
-  title: string;
-  id: number;
-}
-
-interface Writer {
-  nickname: string;
-  id: number;
-}
+import { ArticleProps } from './../types';
+import axiosInstance from './axios';
 
 export const getArticles = async (
   page: number,
   pageSize: number,
   orderBy: string[] | string,
   keyword?: string[] | string
-): Promise<ListProps[]> => {
+): Promise<ArticleProps[]> => {
   const query = `page=${page}&pageSize=${pageSize}&orderBy=${orderBy}&keyword=${keyword}`;
   try {
-    const response = await instance.get(`/articles?${query}`);
+    const response = await axiosInstance.get(`/articles?${query}`);
     return response.data.list ?? [];
   } catch (error) {
     console.error(`Failed to fetch items: ${error}`);
@@ -32,10 +17,10 @@ export const getArticles = async (
   }
 };
 
-export const getBestArticles = async (page: number, pageSize: number, orderBy: string): Promise<ListProps[]> => {
+export const getBestArticles = async (page: number, pageSize: number, orderBy: string): Promise<ArticleProps[]> => {
   const query = `page=${page}&pageSize=${pageSize}&orderBy=${orderBy}`;
   try {
-    const response = await instance.get(`/articles?${query}`);
+    const response = await axiosInstance.get(`/articles?${query}`);
     return response.data.list ?? [];
   } catch (error) {
     console.error(`Failed to fetch items: ${error}`);

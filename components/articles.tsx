@@ -4,7 +4,8 @@ import icSearch from '@/public/images/icons/ic_search.png';
 import icHeart from '@/public/images/icons/ic_heart.png';
 import icProfile from '@/public/images/icons/ic_profile.png';
 import SelectBox from './select-box';
-import { getArticles, ListProps } from '@/lib/getArticles';
+import { getArticles } from '@/lib/getArticles';
+import { ArticleProps } from '@/types';
 import getFormatDate from '@/lib/utils/formatDate';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';
@@ -13,13 +14,13 @@ const PAGE_NUM = 1;
 const PAGE_SIZE = 10;
 
 interface Props {
-  articlesServer: ListProps[];
+  articlesServer: ArticleProps[];
 }
 
 export default function Articles({ articlesServer }: Props) {
   const [orderBy, setOrderby] = useState('recent');
   const [keyword, setKeyword] = useState('');
-  const [articles, setArticles] = useState<ListProps[]>(articlesServer);
+  const [articles, setArticles] = useState<ArticleProps[]>(articlesServer);
   const debouncedValue = useDebounce(keyword, 300);
 
   const handleOrderClick = async (sortType: string): Promise<void> => {
@@ -73,7 +74,7 @@ export default function Articles({ articlesServer }: Props) {
   );
 }
 
-function ArticlePreview({ createdAt, likeCount, image, title, writer }: ListProps) {
+function ArticlePreview({ createdAt, likeCount, image, title, writer }: ArticleProps) {
   const createdDate = getFormatDate(createdAt);
   return (
     <div className='flex flex-col gap-4'>
