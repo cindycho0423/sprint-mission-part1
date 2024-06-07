@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getBestArticles } from '@/lib/getArticles';
+import { getBestArticles } from '@/lib/api/getArticles';
 import { ArticleProps } from '@/types';
 import getFormatDate from '@/lib/utils/formatDate';
 import Link from 'next/link';

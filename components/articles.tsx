@@ -4,7 +4,7 @@ import icSearch from '@/public/images/icons/ic_search.png';
 import icHeart from '@/public/images/icons/ic_heart.png';
 import icProfile from '@/public/images/icons/ic_profile.png';
 import SelectBox from './select-box';
-import { getArticles } from '@/lib/getArticles';
+import { getArticles } from '@/lib/api/getArticles';
 import { ArticleProps } from '@/types';
 import getFormatDate from '@/lib/utils/formatDate';
 import { ChangeEvent, useState, useEffect } from 'react';
