@@ -1,9 +1,10 @@
 import Head from 'next/head';
 import BestArticles from '@/components/best-articles';
 import Articles from '@/components/articles';
-import { GetServerSideProps } from 'next';
-import axiosInstance from '@/lib/axios';
+import axiosInstance from '@/lib/api/axios';
 import { ArticleProps } from '@/types';
+import Link from 'next/link';
+
 interface Props {
   articlesServer: ArticleProps[];
 }
@@ -40,7 +41,9 @@ export default function Boards({ articlesServer }: Props) {
         </div>
         <div className='flex justify-between mt-[40px] mb-4'>
           <h3 className='text-xl font-bold text-cool-gray900'>게시글</h3>
-          <button className='bg-brand-blue rounded-lg text-white w-[88px] h-[42px] font-semibold'>글쓰기</button>
+          <Link href='/addboard'>
+            <button className='bg-brand-blue rounded-lg text-white w-[88px] h-[42px] font-semibold'>글쓰기</button>
+          </Link>
         </div>
         <Articles articlesServer={articlesServer} />
       </div>
