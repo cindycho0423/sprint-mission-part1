@@ -3,8 +3,32 @@
 @tailwind utilities;
 
 * {
-  font-family: 'Pretendard', sans-serif;
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+
+  @apply text-cool-gray800;
+}
+
+h1 {
+  @apply font-bold text-[20px] leading-6;
+}
+
+input,
+textarea {
+  @apply px-6 py-4 bg-cool-gray100 rounded-xl;
+}
+
+textarea {
+  @apply resize-none;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  src: url('../public/font/PretendardVariable.ttf') format('truetype');
+}
+
+body * {
+  font-family: 'Pretendard', sans-serif;
 }
