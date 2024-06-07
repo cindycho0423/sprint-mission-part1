@@ -1,4 +1,4 @@
-import { ArticleProps } from './../types';
+import { ArticleProps } from '@/types';
 import axiosInstance from './axios';
 
 export const getArticles = async (
