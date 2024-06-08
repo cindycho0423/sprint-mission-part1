@@ -1,52 +1,67 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import icSearch from '@/public/images/icons/ic_search.png';
-import icHeart from '@/public/images/icons/ic_heart.png';
-import icProfile from '@/public/images/icons/ic_profile.png';
 import SelectBox from './select-box';
 import { getArticles } from '@/lib/api/getArticles';
 import { ArticleProps } from '@/types';
-import getFormatDate from '@/lib/utils/formatDate';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';
 import { constants, SEARCH_TIME } from '../lib/constants';
+import ArticlePreview from './article-preview';
+import Pagination from './pagination';
 
 interface Props {
   articlesServer: ArticleProps[];
+  totalCount: number;
 }
 
-export default function Articles({ articlesServer }: Props) {
+export default function Articles({ articlesServer, totalCount: initialTotalCount }: Props) {
   const [orderBy, setOrderby] = useState('recent');
   const [keyword, setKeyword] = useState('');
   const [articles, setArticles] = useState<ArticleProps[]>(articlesServer);
+  const [pageNum, setPageNum] = useState(constants.PAGE_NUM);
+  const [totalCount, setTotalCount] = useState(initialTotalCount);
   const debouncedValue = useDebounce(keyword, SEARCH_TIME);
 
   const handleOrderClick = async (sortType: string): Promise<void> => {
     setOrderby(sortType);
+    setPageNum(1);
     try {
-      const sortData = await getArticles(constants.PAGE_NUM, constants.PAGE_SIZE, sortType, keyword);
+      const { list: sortData, totalCount: updatedTotalCount } = await getArticles(
+        1,
+        constants.PAGE_SIZE,
+        sortType,
+        keyword
+      );
       setArticles(sortData);
+      setTotalCount(updatedTotalCount);
     } catch (error) {
       console.error(error);
     }
   };
 
-  const handleChange = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setKeyword(e.target.value);
+    setPageNum(1);
   };
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const sortData = await getArticles(constants.PAGE_NUM, constants.PAGE_SIZE, orderBy, debouncedValue);
+        const { list: sortData, totalCount: updatedTotalCount } = await getArticles(
+          pageNum,
+          constants.PAGE_SIZE,
+          orderBy,
+          debouncedValue
+        );
         setArticles(sortData);
+        setTotalCount(updatedTotalCount);
       } catch (error) {
         console.error(error);
       }
     };
-
     fetchArticles();
-  }, [debouncedValue, orderBy]);
+  }, [orderBy, pageNum, debouncedValue]);
 
   return (
     <div>
@@ -61,40 +76,14 @@ export default function Articles({ articlesServer }: Props) {
         />
         <SelectBox handleOrder={handleOrderClick} />
       </div>
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-6 min-h-[350px]'>
         {articles.map(article => (
           <Link key={article.id} href={`/boards/${article.id}`}>
             <ArticlePreview {...article} />
           </Link>
         ))}
       </div>
-    </div>
-  );
-}
-
-function ArticlePreview({ createdAt, likeCount, image, title, writer }: ArticleProps) {
-  const createdDate = getFormatDate(createdAt);
-  return (
-    <div className='flex flex-col gap-4'>
-      <div className='flex justify-between gap-2 font-semibold text-cool-gray800'>
-        <p className='min-h-[48px] min-w-[263px] sm: w-[263px] md:w-[616px] lg:w-[1120px] leading-5'>{title}</p>
-        {image && (
-          <div className='flex justify-center items-center bg-white border border-solid rounded-md border-cool-gray200 w-[72px] h-[72px]'>
-            <Image src={image} alt='게시글 이미지' width={48} height={45} />
-          </div>
-        )}
-      </div>
-      <div className='flex justify-between pb-6 border-b border-solid text-cool-gray400 border-cool-gray200'>
-        <div className='flex items-center gap-2'>
-          <Image src={icProfile} alt='프로필 이미지' width={24} />
-          <span className='text-cool-gray600'>{writer.nickname}</span>
-          <time>{createdDate}</time>
-        </div>
-        <div className='flex items-center gap-1'>
-          <Image src={icHeart} alt='좋아요 하트' width={16}></Image>
-          <span>{likeCount}+</span>
-        </div>
-      </div>
+      <Pagination pageNum={pageNum} setPageNum={setPageNum} totalCount={totalCount} />
     </div>
   );
 }

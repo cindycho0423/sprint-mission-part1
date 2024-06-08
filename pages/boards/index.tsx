@@ -2,20 +2,24 @@ import Head from 'next/head';
 import BestArticles from '@/components/best-articles';
 import Articles from '@/components/articles';
 import axiosInstance from '@/lib/api/axios';
-import { ArticleProps } from '@/types';
+import { ArticleProps, ArticleList } from '@/types';
 import Link from 'next/link';
 
 interface Props {
   articlesServer: ArticleProps[];
+  totalCount: number;
 }
 export async function getServerSideProps() {
   try {
     const res = await axiosInstance.get(`/articles`);
-    const articlesServer: ArticleProps[] = res.data.list ?? [];
+    const getArticlesServer: ArticleList = res.data ?? {};
+    const articlesServer: ArticleProps[] = getArticlesServer.list ?? [];
+    const totalCount = getArticlesServer.totalCount;
 
     return {
       props: {
         articlesServer,
+        totalCount,
       },
     };
   } catch (error) {
@@ -23,12 +27,13 @@ export async function getServerSideProps() {
     return {
       props: {
         articlesServer: [],
+        totalCount: 0,
       },
     };
   }
 }
 
-export default function Boards({ articlesServer }: Props) {
+export default function Boards({ articlesServer, totalCount }: Props) {
   return (
     <>
       <Head>
@@ -45,7 +50,7 @@ export default function Boards({ articlesServer }: Props) {
             <button className='bg-brand-blue rounded-lg text-white w-[88px] h-[42px] font-semibold'>글쓰기</button>
           </Link>
         </div>
-        <Articles articlesServer={articlesServer} />
+        <Articles articlesServer={articlesServer} totalCount={totalCount} />
       </div>
     </>
   );

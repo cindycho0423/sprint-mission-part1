@@ -1,3 +1,8 @@
+export type ArticleList = {
+  totalCount: number;
+  list: ArticleProps[];
+};
+
 export type ArticleProps = {
   updatedAt: string;
   createdAt: string;
