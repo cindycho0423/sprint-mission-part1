@@ -4,13 +4,12 @@ import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
 type Props = {
   id: string;
-  initialToken: string;
   onNewComment: () => void;
 };
 
-export default function CommentForm({ id, initialToken, onNewComment }: Props) {
+export default function CommentForm({ id, onNewComment }: Props) {
   const [comment, setComment] = useState('');
-  const [token, setToken] = useState(initialToken);
+  const [token, setToken] = useState('');
 
   useEffect(() => {
     const localToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;

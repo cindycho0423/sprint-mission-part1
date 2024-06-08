@@ -14,13 +14,11 @@ import ArticleDetail from '@/components/article-detail';
 
 type Props = {
   article: ArticleProps | null;
-  initialToken: string;
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Props>> {
   const { id } = context.params as { id: string };
   let article: ArticleProps | null = null;
-  let initialToken = '';
 
   try {
     const res = await axiosInstance.get(`/articles/${id}`);
@@ -32,12 +30,11 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
   return {
     props: {
       article,
-      initialToken,
     },
   };
 }
 
-export default function Article({ article, initialToken }: Props) {
+export default function Article({ article }: Props) {
   const router = useRouter();
   const { id } = router.query as { id: string };
   const [comments, setComments] = useState<CommentProps[]>([]);
@@ -116,7 +113,7 @@ export default function Article({ article, initialToken }: Props) {
       </Head>
       <div className='flex-col gap-4 m-auto w-[343px] md:w-[696px] lg:w-[1200px] pt-6 min-h-[730px]'>
         <ArticleDetail {...article} />
-        <CommentInput id={id} initialToken={initialToken} onNewComment={handleNewComment} />
+        <CommentInput id={id} onNewComment={handleNewComment} />
         <CommentList comments={comments} />
         <div ref={commentsEnd} />
         {loading && <div>Loading...</div>}
