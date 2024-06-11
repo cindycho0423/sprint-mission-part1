@@ -1,4 +1,4 @@
-import axiosInstance from './axios';
+import { axiosInstance } from '@/lib/api/axios';
 
 type LoginResponse = {
   accessToken: string;
@@ -7,9 +7,10 @@ type LoginResponse = {
 export const loginUser = async (email: string, password: string): Promise<LoginResponse> => {
   try {
     const response = await axiosInstance.post('auth/signIn', { email, password });
-    const { accessToken } = response.data;
+    const { accessToken, refreshToken } = response.data;
     if (typeof window !== 'undefined') {
-      localStorage.setItem('accessToken', accessToken);
+      sessionStorage.setItem('accessToken', accessToken);
+      sessionStorage.setItem('refreshToken', refreshToken);
     }
     return response.data;
   } catch (error) {

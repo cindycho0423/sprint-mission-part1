@@ -12,7 +12,7 @@ export default function CommentForm({ id, onNewComment }: Props) {
   const [token, setToken] = useState('');
 
   useEffect(() => {
-    const localToken = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    const localToken = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
     if (localToken) {
       setToken(localToken);
     }

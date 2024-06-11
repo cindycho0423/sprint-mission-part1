@@ -12,14 +12,14 @@ export default function Navigation() {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
+    const token = sessionStorage.getItem('accessToken');
     setIsLoggedIn(!!token);
     setIsChecked(true);
   }, []);
 
   useEffect(() => {
     const handleRouteChange = () => {
-      const token = localStorage.getItem('accessToken');
+      const token = sessionStorage.getItem('accessToken');
       setIsLoggedIn(!!token);
     };
 
@@ -37,7 +37,7 @@ export default function Navigation() {
   }, []);
 
   const handleLogoutClick = () => {
-    localStorage.removeItem('accessToken');
+    sessionStorage.removeItem('accessToken');
     setIsLoggedIn(false);
   };
 

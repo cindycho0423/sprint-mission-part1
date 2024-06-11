@@ -7,7 +7,6 @@ import { ArticleProps } from '@/types';
 
 export default function ArticleDetail({ content, createdAt, image, likeCount, title, writer }: ArticleProps) {
   const createdDate = getFormatDate(createdAt);
-
   return (
     <>
       <div className='flex justify-between mb-4'>

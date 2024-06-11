@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from 'react';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
 import { constants } from '@/lib/constants';
 import { ArticleProps, CommentProps } from '@/types';
-import axiosInstance from '@/lib/api/axios';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -11,6 +10,8 @@ import icBack from '@/public/images/icons/ic_back.svg';
 import CommentInput from '@/components/comment-input';
 import CommentList from '@/components/comment-list';
 import ArticleDetail from '@/components/article-detail';
+import { axiosInstance, baseURL } from '@/lib/api/axios';
+import axios from 'axios';
 
 type Props = {
   article: ArticleProps | null;
@@ -21,7 +22,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
   let article: ArticleProps | null = null;
 
   try {
-    const res = await axiosInstance.get(`/articles/${id}`);
+    const res = await axios.get(`${baseURL}/articles/${id}`);
     article = res.data ?? null;
   } catch (error) {
     console.error('Failed to fetch article:', error);
@@ -52,8 +53,11 @@ export default function Article({ article }: Props) {
 
     setComments(prevComments => {
       const allComments = [...prevComments, ...nextComments];
-      const uniqueComments = Array.from(new Set(allComments.map(c => c.id))).map(id =>
-        allComments.find(c => c.id === id)
+      const sortedComments = allComments.sort(
+        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      const uniqueComments = Array.from(new Set(sortedComments.map(c => c.id))).map(id =>
+        sortedComments.find(c => c.id === id)
       );
       return uniqueComments;
     });
@@ -65,10 +69,8 @@ export default function Article({ article }: Props) {
     }
     return nextCursor;
   };
-
   const handleNewComment = async () => {
-    const newCursor = await getComments(id);
-    setCursor(newCursor);
+    await getComments(id);
   };
 
   useEffect(() => {

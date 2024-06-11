@@ -1,5 +1,5 @@
 import { ArticleProps, ArticleList } from '@/types';
-import axiosInstance from './axios';
+import { axiosInstance } from './axios';
 
 export const getArticles = async (
   page: number,
