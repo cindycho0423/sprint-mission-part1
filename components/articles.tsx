@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import icSearch from '@/public/images/icons/ic_search.png';
-import SelectBox from './select-box';
+import SelectOrder from './select-order';
 import { getArticles } from '@/lib/api/getArticles';
 import { ArticleProps } from '@/types';
 import { ChangeEvent, useState, useEffect } from 'react';
@@ -74,7 +74,7 @@ export default function Articles({ articlesServer, totalCount: initialTotalCount
           placeholder='검색할 상품을 입력해주세요'
           className='placeholder-cool-gray400 w-[293px] h-[42px] pl-9 bg-cool-gray100 rounded-xl md:w-[560px] lg:w-[1054px] relative left-[1px] focus:border'
         />
-        <SelectBox handleOrder={handleOrderClick} />
+        <SelectOrder handleOrder={handleOrderClick} />
       </div>
       <div className='flex flex-col gap-6 min-h-[350px]'>
         {articles.map(article => (
