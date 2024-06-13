@@ -1,6 +1,6 @@
 import { axiosInstance } from './axios';
 
-export const signUpUser = async (email: string, nickname: string, password: string, passwordConfirmation: string) => {
+export const signUpUser = async (email: string, password: string, nickname?: string, passwordConfirmation?: string) => {
   try {
     const response = await axiosInstance.post('auth/signUp', { email, password, nickname, passwordConfirmation });
     return response.data;
