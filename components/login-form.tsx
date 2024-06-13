@@ -5,7 +5,7 @@ import Image from 'next/image';
 import closedEye from '@/public/images/icons/ic_closed-eye.svg';
 import openEye from '@/public/images/icons/ic_open-eye.svg';
 import { useRouter } from 'next/router';
-import { loginUser } from '@/lib/api/loginUser';
+import { loginUser } from '@/lib/api/user';
 import { useState } from 'react';
 
 type Inputs = {

@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import icSearch from '@/public/images/icons/ic_search.png';
 import SelectOrder from './select-order';
-import { getArticles } from '@/lib/api/getArticles';
+import { getArticles } from '@/lib/api/articles';
 import { ArticleProps } from '@/types';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';

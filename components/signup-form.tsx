@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { joinValidationSchema } from '@/lib/utils/validation/schema';
 import { useRouter } from 'next/router';
-import { signUpUser } from '@/lib/api/signupUser';
+import { signUpUser } from '@/lib/api/user';
 import { useState } from 'react';
 import closedEye from '../public/images/icons/ic_closed-eye.svg';
 import openEye from '../public/images/icons/ic_open-eye.svg';

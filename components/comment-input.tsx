@@ -1,4 +1,4 @@
-import { postComment } from '@/lib/api/postComment';
+import { postComment } from '@/lib/api/comment';
 import SubmitButton from '@/components/submit-btn';
 import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 
