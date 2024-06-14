@@ -1,4 +1,4 @@
-import { ArticleProps, ArticleList, PostArticleType } from '@/types';
+import type { ArticleProps, ArticleList, PostArticleType } from '@/types';
 import { axiosInstance } from './axios';
 
 export const getArticles = async (

@@ -7,7 +7,7 @@ import SignUpForm from '@/components/signup-form';
 
 export default function SignUp() {
   return (
-    <div className='mx-auto mt-6 mb-[90px] w-mobile md:w-[640px] lg:w-[640px]'>
+    <div className='mx-auto mt-16 mb-[90px] w-mobile md:w-[640px] lg:w-[640px]'>
       <Link href='/'>
         <Image src={imgLogoBig} alt='판다마켓 로고' className='mx-auto mb-8 w-[198px] md:w-[300px] lg:w-[300px]' />
       </Link>

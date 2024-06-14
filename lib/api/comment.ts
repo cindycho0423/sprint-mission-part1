@@ -4,7 +4,7 @@ type CommentType = {
   content: string;
 };
 
-export const postComment = async (content: string, articleId: string, token: string): Promise<CommentType> => {
+export const postComment = async (content: string, articleId: string, token: string | null): Promise<CommentType> => {
   try {
     const response = await axiosInstance.post(
       `/articles/${articleId}/comments`,

@@ -3,10 +3,10 @@ import Link from 'next/link';
 import icSearch from '@/public/images/icons/ic_search.png';
 import SelectOrder from './select-order';
 import { getArticles } from '@/lib/api/articles';
-import { ArticleProps } from '@/types';
+import type { ArticleProps } from '@/types';
 import { ChangeEvent, useState, useEffect } from 'react';
 import useDebounce from '@/hooks/useDebounce';
-import { constants, SEARCH_TIME } from '../lib/constants';
+import { PAGINATION_DEFAULT, SEARCH_TIME } from '../lib/constants';
 import ArticlePreview from './article-preview';
 import Pagination from './pagination';
 
@@ -14,12 +14,13 @@ interface Props {
   articlesServer: ArticleProps[];
   totalCount: number;
 }
+const { PAGE_NUM, PAGE_SIZE } = PAGINATION_DEFAULT;
 
 export default function Articles({ articlesServer, totalCount: initialTotalCount }: Props) {
   const [orderBy, setOrderby] = useState('recent');
   const [keyword, setKeyword] = useState('');
   const [articles, setArticles] = useState<ArticleProps[]>(articlesServer);
-  const [pageNum, setPageNum] = useState(constants.PAGE_NUM);
+  const [pageNum, setPageNum] = useState(PAGE_NUM);
   const [totalCount, setTotalCount] = useState(initialTotalCount);
   const debouncedValue = useDebounce(keyword, SEARCH_TIME);
 
@@ -27,12 +28,7 @@ export default function Articles({ articlesServer, totalCount: initialTotalCount
     setOrderby(sortType);
     setPageNum(1);
     try {
-      const { list: sortData, totalCount: updatedTotalCount } = await getArticles(
-        1,
-        constants.PAGE_SIZE,
-        sortType,
-        keyword
-      );
+      const { list: sortData, totalCount: updatedTotalCount } = await getArticles(1, PAGE_SIZE, sortType, keyword);
       setArticles(sortData);
       setTotalCount(updatedTotalCount);
     } catch (error) {
@@ -50,7 +46,7 @@ export default function Articles({ articlesServer, totalCount: initialTotalCount
       try {
         const { list: sortData, totalCount: updatedTotalCount } = await getArticles(
           pageNum,
-          constants.PAGE_SIZE,
+          PAGE_SIZE,
           orderBy,
           debouncedValue
         );

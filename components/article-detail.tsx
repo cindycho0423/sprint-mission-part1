@@ -2,8 +2,8 @@ import Image from 'next/image';
 import HeartButton from './heart-button';
 import icProfile from '@/public/images/icons/ic_profile.png';
 import icKebab from '@/public/images/icons/ic_kebab.svg';
-import getFormatDate from '@/lib/utils/formatDate';
-import { ArticleProps } from '@/types';
+import getFormatDate from '@/lib/utils/date';
+import type { ArticleProps } from '@/types';
 import { useState, useRef, useEffect } from 'react';
 import SelectBox from './select-box';
 

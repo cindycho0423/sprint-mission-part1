@@ -1,15 +1,13 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import imgLogoBig from '../public/images/img_logo_big.png';
-import google from '../public/images/google.png';
-import kakao from '../public/images/kakao.png';
-import { useRouter } from 'next/router';
+import imgLogoBig from '@/public/images/img_logo_big.png';
+import google from '@/public/images/google.png';
+import kakao from '@/public/images/kakao.png';
 import LoginForm from '@/components/login-form';
 
 export default function Login() {
-  const router = useRouter();
   return (
-    <div className='mx-auto mt-6 mb-[198px] w-mobile md:w-[640px] lg:w-[640px]'>
+    <div className='mx-auto mt-16 mb-[198px] w-mobile md:w-[640px] lg:w-[640px]'>
       <Link href='/'>
         <Image src={imgLogoBig} alt='판다마켓 로고' className='mx-auto mb-8 w-[198px] md:w-[300px] lg:w-[300px]' />
       </Link>
