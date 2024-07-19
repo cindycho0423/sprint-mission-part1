@@ -1,22 +1,34 @@
 import { ChangeEvent, FormEvent, KeyboardEvent, useState } from 'react';
-import styles from './add-item.module.css';
+import styles from './modify-item.module.css';
 import FileInput from '@/components/fileInput';
 import TagInput from '@/components/add-item/TagInput';
 import { useMutation } from '@tanstack/react-query';
 import { PostProduct } from '@/lib/api/products';
 import { postImageUrl } from '@/lib/api/image-url';
 import { useRouter } from 'next/router';
+import { ItemResponse } from '@/lib/api/items';
 
-export default function AddItem() {
+type Props = {
+  currentData: ItemResponse;
+};
+
+export default function ModifyItemDetails({ currentData }: Props) {
+  const {
+    images: currentImages,
+    tags: currentTagList,
+    price: currentPrice,
+    description: currentDescription,
+    name: currentName,
+  } = currentData;
   const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
   const router = useRouter();
   const [values, setValues] = useState({
-    imageFile: null,
-    name: '',
-    description: '',
+    imageFile: currentImages[0],
+    name: currentName,
+    description: currentDescription,
   });
-  const [tags, setTags] = useState<string[]>([]);
-  const [price, setPrice] = useState('');
+  const [tags, setTags] = useState<string[]>(currentTagList);
+  const [price, setPrice] = useState(currentPrice.toString());
 
   const addComma = (price: string) => {
     let returnString = price?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -116,9 +128,9 @@ export default function AddItem() {
   return (
     <form className={styles.addItemForm} action='submit' onSubmit={handleSubmit} onKeyDown={preventDefault}>
       <div className={styles.registerItemTitleWrap}>
-        <h2 className={styles.registerItemTitle}>상품 등록하기</h2>
+        <h2 className={styles.registerItemTitle}>상품 수정하기</h2>
         <button className={styles.registerItemBtn} style={buttonStyle} type='submit' disabled={!isFormComplete}>
-          등록
+          수정
         </button>
       </div>
       <FileInput name='imageFile' value={values.imageFile} onChange={handleFileChange} />

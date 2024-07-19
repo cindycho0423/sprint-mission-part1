@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ItemResponse, getItemsId } from '@/lib/api/items';
 
-export default function useItem(productId: string | undefined) {
+export default function useItem(productId: number | undefined) {
   const [item, setItem] = useState<ItemResponse | null>(null);
 
   useEffect(() => {

@@ -32,7 +32,7 @@ export type ItemResponse = {
   createdAt: string;
   favoriteCount: number;
   ownerId: number;
-  images: string;
+  images: string[];
   tags: string[];
   price: number;
   description: string;
@@ -41,9 +41,9 @@ export type ItemResponse = {
   isFavorite: boolean;
 };
 
-export const getItemsId = async (productId: string): Promise<ItemResponse | undefined> => {
+export const getItemsId = async (productId: number): Promise<ItemResponse | undefined> => {
   try {
-    const productIdNumber = parseInt(productId);
+    const productIdNumber = productId;
     const response = await axiosInstance.get<ItemResponse>(`/products/${productIdNumber}`);
     return response.data;
   } catch (error) {
@@ -64,6 +64,7 @@ export type GetCommentsResponse = {
   createdAt: string;
   updatedAt: string;
   writer: WriterResponse;
+  itemId: string | undefined;
 };
 
 type GetCommentListResponse = {
@@ -72,12 +73,14 @@ type GetCommentListResponse = {
 };
 
 export const getItemsComments = async (
-  productId: string,
+  productId: string | undefined,
+  cursor: number | null,
   limit: number
 ): Promise<GetCommentListResponse | undefined> => {
   try {
     const response = await axiosInstance.get<GetCommentListResponse>(`/products/${productId}/comments`, {
       params: {
+        cursor,
         limit,
       },
     });
@@ -85,5 +88,74 @@ export const getItemsComments = async (
   } catch (error) {
     console.error(`Failed to fetch data: ${error}`);
     return undefined;
+  }
+};
+
+type CommentType = {
+  content: string;
+};
+
+export const postItemComment = async (
+  content: string,
+  itemId: string | undefined,
+  token: string | null
+): Promise<CommentType> => {
+  try {
+    const response = await axiosInstance.post(
+      `/products/${itemId}/comments`,
+      { content },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to post comment: ${error}`);
+    throw new Error('댓글 작성에 실패했습니다');
+  }
+};
+
+export const patchItemComment = async (
+  content: string,
+  commentId: number | undefined,
+  token: string | null
+): Promise<CommentType> => {
+  try {
+    const response = await axiosInstance.patch(
+      `/comments/${commentId}`,
+      { content },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to patch comment: ${error}`);
+    throw new Error('댓글 수정에 실패했습니다');
+  }
+};
+
+type DeleteComment = {
+  id: string;
+};
+
+export const deleteItemComment = async (
+  commentId: number | undefined,
+  token: string | null
+): Promise<DeleteComment> => {
+  try {
+    const response = await axiosInstance.delete(`/comments/${commentId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Failed to delete comment: ${error}`);
+    throw new Error('댓글 삭제에 실패했습니다');
   }
 };

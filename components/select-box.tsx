@@ -14,6 +14,11 @@ export default function SelectBox({ items, setSelectBoxIsOpen, exceptions = [] }
   const dropdownRef = useRef<HTMLUListElement>(null);
   useOutsideClick(dropdownRef, () => setSelectBoxIsOpen(false), exceptions);
 
+  const handleClick = (onClick: () => void) => {
+    onClick();
+    setSelectBoxIsOpen(false);
+  };
+
   return (
     <ul
       ref={dropdownRef}
@@ -23,7 +28,7 @@ export default function SelectBox({ items, setSelectBoxIsOpen, exceptions = [] }
           <button
             className='h-6 w-[60px] text-[12px] rounded-md hover:bg-brand-blue/10 hover:text-brand-blue'
             type='button'
-            onClick={item.onClick}>
+            onClick={() => handleClick(item.onClick)}>
             {item.label}
           </button>
         </li>
