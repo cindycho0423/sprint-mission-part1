@@ -1,5 +1,6 @@
-import { useEffect, useState, ChangeEvent } from 'react';
-import { getItemsComments, GetCommentsResponse } from '@/lib/api/items';
+import React, { useEffect, useState, ChangeEvent, KeyboardEvent, FormEvent } from 'react';
+import { useInfiniteQuery, useQueryClient, useMutation } from '@tanstack/react-query';
+import { getItemsComments, GetCommentsResponse, postItemComment } from '@/lib/api/items';
 import useItem from '@/hooks/useItem';
 import ItemDetailCard from '@/components/item-details/ItemDetailCard';
 import Comment from '@/components/item-details/Comment';
@@ -8,34 +9,38 @@ import Img_inquiry_empty from '@/public/images/image_inquiry_empty.png';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
-type ParamsType = {
-  itemId: string;
+type GetCommentListResponse = {
+  nextCursor: number;
+  list: GetCommentsResponse[];
 };
 
+const COMMENT_LIMIT = 3;
+
 export default function ItemDetails() {
+  const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
   const router = useRouter();
   const { id: itemId } = router.query as { id?: string };
-  const item = useItem(itemId);
-  const [comments, setComments] = useState<GetCommentsResponse[]>([]);
+  const item = useItem(itemId ? parseInt(itemId) : undefined);
   const [inquiryComment, setInquiryComment] = useState('');
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        if (itemId && item) {
-          const data = await getItemsComments(itemId, 3);
-          if (data) {
-            setComments(data.list);
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch items:', error);
-      }
-    };
-    fetchComments();
-  }, [itemId, item]);
+  const { data, isLoading, isError, fetchNextPage, hasNextPage } = useInfiniteQuery<GetCommentListResponse>({
+    queryKey: ['item', itemId, 'comments'],
+    queryFn: ({ pageParam = null }) => getItemsComments(itemId, pageParam as number | null, COMMENT_LIMIT),
+    getNextPageParam: lastPage => lastPage.nextCursor,
+  });
 
-  const handleGoBack = () => {};
+  const createCommentMutation = useMutation({
+    mutationFn: ({ inquiryComment, itemId, token }: PostComment) => postItemComment(inquiryComment, itemId, token),
+    onSuccess: () => {
+      setInquiryComment('');
+      queryClient.invalidateQueries({ queryKey: ['item', itemId, 'comments'] });
+    },
+  });
+
+  const handleGoBack = () => {
+    router.push('/items');
+  };
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     setInquiryComment(e.target.value);
@@ -48,11 +53,31 @@ export default function ItemDetails() {
   if (!item) {
     return <div>데이터 로딩중...</div>;
   }
+
+  type PostComment = {
+    inquiryComment: string;
+    itemId: string | undefined;
+    token: string | null;
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    createCommentMutation.mutate({ inquiryComment, itemId, token });
+  };
+
+  const preventDefault = (e: KeyboardEvent<HTMLFormElement>) => {
+    e.key === 'Enter' && e.preventDefault();
+  };
+
   return (
     <div className='w-[343px] mx-auto pb-[121px] md:w-[696px] lg:w-[1200px]'>
-      <ItemDetailCard {...item} id={itemId} />
+      <ItemDetailCard itemDetail={item} id={itemId} />
       <div className='w-full h-[1px] bg-[#e5e7eb] my-[8px] md:mb-[16px] lg:mb-[24px]' />
-      <form className='flex flex-col items-end gap-[16px] pb-[16px] md:pb-[24px]'>
+      <form
+        action='submit'
+        onSubmit={handleSubmit}
+        onKeyDown={preventDefault}
+        className='flex flex-col items-end gap-[16px] pb-[16px] md:pb-[24px]'>
         <label htmlFor='comment' className='w-full flex flex-col gap-[12px]'>
           문의하기
           <textarea
@@ -70,15 +95,40 @@ export default function ItemDetails() {
           등록
         </button>
       </form>
-      {comments.length === 0 ? (
-        <div className='flex flex-col items-center'>
-          <div className='w-[200px] h-[200px]'>
-            <Image src={Img_inquiry_empty} alt='회색 판다 그림' className='w-full h-full' />
-          </div>
-          <p className='font-[400] text-[16px] text-[#9ca3af] leading-[24px]'>아직 문의가 없습니다.</p>
-        </div>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : isError ? (
+        <div>Error loading comments</div>
       ) : (
-        comments.map(comment => <Comment key={comment.id} {...comment} />)
+        <>
+          {data.pages.map((page, index) => (
+            <React.Fragment key={index}>
+              {page.list.length === 0 && index === 0 ? (
+                <div className='flex flex-col items-center'>
+                  <div className='w-[200px] h-[200px]'>
+                    <Image
+                      width={200}
+                      height={200}
+                      src={Img_inquiry_empty}
+                      alt='회색 판다 그림'
+                      className='w-full h-full'
+                    />
+                  </div>
+                  <p className='font-[400] text-[16px] text-[#9ca3af] leading-[24px]'>아직 문의가 없습니다.</p>
+                </div>
+              ) : (
+                page.list.map((comment: GetCommentsResponse) => (
+                  <Comment key={comment.id} {...comment} itemId={itemId} />
+                ))
+              )}
+            </React.Fragment>
+          ))}
+          {hasNextPage && (
+            <button onClick={() => fetchNextPage()} className='h-10 mt-4 text-white rounded-md min-w-28 bg-brand-blue'>
+              댓글 더보기
+            </button>
+          )}
+        </>
       )}
       <button
         onClick={handleGoBack}

@@ -3,7 +3,7 @@ import styles from './add-item.module.css';
 import FileInput from '@/components/fileInput';
 import TagInput from '@/components/add-item/TagInput';
 import { useMutation } from '@tanstack/react-query';
-import { PostProduct } from '@/lib/api/products';
+import { postProduct } from '@/lib/api/products';
 import { postImageUrl } from '@/lib/api/image-url';
 import { useRouter } from 'next/router';
 
@@ -63,7 +63,7 @@ export default function AddItem() {
   };
 
   const uploadPostMutation = useMutation({
-    mutationFn: (newPost: newPost) => PostProduct(newPost),
+    mutationFn: (newPost: newPost) => postProduct(newPost),
     onSuccess: data => {
       router.push(`/items/${data.id}`);
     },

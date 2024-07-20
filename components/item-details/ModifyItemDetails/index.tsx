@@ -3,7 +3,7 @@ import styles from './modify-item.module.css';
 import FileInput from '@/components/fileInput';
 import TagInput from '@/components/add-item/TagInput';
 import { useMutation } from '@tanstack/react-query';
-import { PostProduct } from '@/lib/api/products';
+import { patchProduct } from '@/lib/api/products';
 import { postImageUrl } from '@/lib/api/image-url';
 import { useRouter } from 'next/router';
 import { ItemResponse } from '@/lib/api/items';
@@ -19,11 +19,12 @@ export default function ModifyItemDetails({ currentData }: Props) {
     price: currentPrice,
     description: currentDescription,
     name: currentName,
+    id: productId,
   } = currentData;
   const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
   const router = useRouter();
   const [values, setValues] = useState({
-    imageFile: currentImages[0],
+    imageFile: null,
     name: currentName,
     description: currentDescription,
   });
@@ -65,17 +66,18 @@ export default function ModifyItemDetails({ currentData }: Props) {
     handleChange(name, value);
   };
 
-  type newPost = {
+  type PatchPost = {
     name: string;
     description: string;
     images: string[] | undefined;
     tags: string[];
     price: number;
     token: string | null;
+    productId: number;
   };
 
   const uploadPostMutation = useMutation({
-    mutationFn: (newPost: newPost) => PostProduct(newPost),
+    mutationFn: (newPost: PatchPost) => patchProduct(newPost),
     onSuccess: data => {
       router.push(`/items/${data.id}`);
     },
@@ -103,8 +105,8 @@ export default function ModifyItemDetails({ currentData }: Props) {
         images.push(imageResponse.url);
       }
 
-      const newPost = { token, images, name, description, tags, price: parseFloat(price) };
-      uploadPostMutation.mutate(newPost);
+      const patchPost = { token, images, name, description, tags, price: parseFloat(price), productId };
+      uploadPostMutation.mutate(patchPost);
     } catch (error) {
       console.error('Error posting article:', error);
     }
@@ -133,7 +135,12 @@ export default function ModifyItemDetails({ currentData }: Props) {
           수정
         </button>
       </div>
-      <FileInput name='imageFile' value={values.imageFile} onChange={handleFileChange} />
+      <FileInput
+        name='imageFile'
+        value={values.imageFile}
+        onChange={handleFileChange}
+        defaultValue={currentImages[0]}
+      />
       <label htmlFor='name' className={styles.formLabel}>
         상품명
         <input

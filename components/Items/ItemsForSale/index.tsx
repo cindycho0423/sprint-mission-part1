@@ -3,18 +3,24 @@ import ItemForSale from '../ItemForSale';
 import Link from 'next/link';
 import styles from './items-for-sale.module.css';
 import SelectBox from '../SelectBox';
-import PageButton from '../PageButton';
 import { Item } from '@/types';
+import Pagination from '@/components/pagination';
+import { PAGINATION_DEFAULT } from '@/lib/constants';
 
 type ItemProps = {
+  totalCount: number | undefined;
   items: Item[];
 };
 
-export default function ItemsForSale({ items }: ItemProps) {
+const { PAGE_NUM, PAGE_SIZE } = PAGINATION_DEFAULT;
+
+export default function ItemsForSale({ items, totalCount: initialTotalCount }: ItemProps) {
   const [itemsToShow, setItemsToShow] = useState(10);
   const [title, setTitle] = useState('판매 중인 상품');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState<Item[]>(items.slice(0, itemsToShow));
+  const [pageNum, setPageNum] = useState(PAGE_NUM);
+  const [totalCount, setTotalCount] = useState(initialTotalCount);
 
   const handleSort = (criteria: string) => {
     let sortedItems: Item[] = [];
@@ -80,7 +86,7 @@ export default function ItemsForSale({ items }: ItemProps) {
           </Link>
         ))}
       </section>
-      <PageButton />
+      <Pagination pageNum={pageNum} setPageNum={setPageNum} totalCount={totalCount} />
     </div>
   );
 }

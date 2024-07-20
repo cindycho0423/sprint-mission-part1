@@ -7,13 +7,16 @@ import { Item, ItemProps } from '@/types';
 
 export default function Items() {
   const [items, setItems] = useState<Item[]>([]);
+  const [totalCount, setTotalCount] = useState<number | undefined>(0);
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         const data: ItemProps = await getItems();
         const wholeItems = data.list ?? [];
+        const { totalCount: initialCount } = data;
         setItems(wholeItems);
+        setTotalCount(initialCount);
       } catch (error) {
         console.error('Failed to fetch items:', error);
       }
@@ -30,7 +33,7 @@ export default function Items() {
   return (
     <div className={styles.main}>
       <BestItems list={getBestItems()} />
-      <ItemsForSale items={items} />
+      <ItemsForSale items={items} totalCount={totalCount} />
     </div>
   );
 }

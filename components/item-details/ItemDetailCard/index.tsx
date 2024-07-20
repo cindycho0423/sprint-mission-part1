@@ -7,14 +7,23 @@ import Image from 'next/image';
 import icBack from '@/public/images/icons/ic_back.svg';
 import Modal from '@/components/modal';
 import ModifyItemDetails from '../ModifyItemDetails';
+import { useRouter } from 'next/router';
+import { useMutation } from '@tanstack/react-query';
+import { deleteProduct } from '@/lib/api/products';
 
 type Props = {
   itemDetail: ItemResponse;
   id: string | undefined;
 };
 
+type DeleteProduct = {
+  id: string | undefined;
+  token: string | null;
+};
+
 export default function ItemDetailCard({ itemDetail, id }: Props) {
   const { name, description, images, price, tags, favoriteCount, ownerId } = itemDetail;
+  const router = useRouter();
   const [selectBoxIsOpen, setSelectBoxIsOpen] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const handleModalClose = (setter: (value: boolean) => void) => () => {
@@ -22,10 +31,28 @@ export default function ItemDetailCard({ itemDetail, id }: Props) {
   };
   const kebabRef = useRef<HTMLImageElement | null>(null);
   const userId = typeof window !== 'undefined' ? sessionStorage.getItem('userInfo') : null;
+  const token = typeof window !== 'undefined' ? sessionStorage.getItem('accessToken') : null;
+
+  const deleteProductMutation = useMutation({
+    mutationFn: ({ id, token }: DeleteProduct) => deleteProduct(id, token),
+    onSuccess: () => {
+      setModalIsOpen(prev => !prev);
+      router.push('/items');
+    },
+  });
+
+  const handleDelete = async () => {
+    deleteProductMutation.mutate({ id, token });
+  };
 
   const dropdownList = [
     { label: '수정하기', onClick: () => setModalIsOpen(true) },
-    { label: '삭제하기', onClick: () => {} },
+    {
+      label: '삭제하기',
+      onClick: () => {
+        handleDelete();
+      },
+    },
   ];
   const formattedPrice = price?.toLocaleString();
   return (
